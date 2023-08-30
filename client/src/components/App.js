@@ -4,6 +4,11 @@ import 'jquery/dist/jquery.slim.min.js'; // Import jQuery
 import 'popper.js/dist/umd/popper.min.js'; // Import Popper.js
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap JS
 import AddTaskForm from './AddTaskForm';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Notes from "./Notes";
+import Tasks from "./Tasks";
+import Calendar from "./Calendar";
+
 function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isLoginFormOpen, setIsLoginFormOpen] = useState(false);
@@ -118,15 +123,16 @@ function App() {
               <div className="collapse navbar-collapse" id="navbarText">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                   <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="#">Tasks |</a>
+                    <Link to="/tasks" className="nav-link" aria-current="page">Tasks |</Link>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#"> Notes |</a>
+                    <Link to="/notes" className="nav-link"> Notes |</Link>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#"> Calendar |</a>
+                    <Link to="/calendar" className="nav-link"> Calendar |</Link>
                   </li>
                 </ul>
+                
                 <button type="button" className="btn btn-outline-info" onClick={() => setIsAddTaskOpen(true)}>Add Task</button>
                 <span className="navbar-text">
                   | Invite +
@@ -145,14 +151,25 @@ function App() {
       </nav>
           {/* Rest of your content */}
           <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} />
-          <div className="task-list">
+          <Switch>
+              <Route path="/tasks">
+                <Tasks tasks={tasks} />
+              </Route>
+              <Route path="/notes">
+                <Notes />
+              </Route>
+              <Route path="/calendar">
+                <Calendar />
+              </Route>
+            </Switch>
+          {/* <div className="task-list">
             <h2>Tasks</h2>
             <ul>
               {tasks.map((task, index) => (
                 <li key={index}>{task}</li>
               ))}
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
