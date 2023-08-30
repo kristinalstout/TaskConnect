@@ -2,15 +2,21 @@ import React, { useState } from "react";
 
 function AddTaskForm({ isOpen, onClose, onAddTask }) {
   const [task, setTask] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
   const handleTaskChange = (event) => {
     setTask(event.target.value);
   };
 
+  const handleDueDateChange = (event) => {
+    setDueDate(event.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAddTask(task);
+    onAddTask({ task, dueDate });
     setTask("");
+    setDueDate("");
     onClose();
   };
 
@@ -26,6 +32,10 @@ function AddTaskForm({ isOpen, onClose, onAddTask }) {
           <label>
             Task:
             <input type="text" value={task} onChange={handleTaskChange} />
+          </label>
+          <label>
+            Due Date:
+            <input type="date" value={dueDate} onChange={handleDueDateChange} />
           </label>
           <button type="submit">Add Task</button>
         </form>
