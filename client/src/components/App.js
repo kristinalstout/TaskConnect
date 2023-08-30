@@ -13,10 +13,24 @@ function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isLoginFormOpen, setIsLoginFormOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [invitedEmail, setInvitedEmail] = useState('');
+  const [isInvitationSent, setIsInvitationSent] = useState(false);
 
   const handleAddTask = (newTask) => {
-    setTasks([...tasks, newTask]);
-    setIsAddTaskOpen(false); // Close the popup form after adding task
+    setTasks((prevTasks) => [...prevTasks, newTask]);
+    setIsAddTaskOpen(false);
+  };
+
+  const handleInviteSubmit = () => {
+    setInvitedEmail('');
+    setIsInvitationSent(true);
+    setIsInviteOpen(false);
+  };
+
+  const handleInviteClick = () => {
+    setIsInviteOpen(true);
+    setIsInvitationSent(false); 
   };
 
   return (
@@ -24,7 +38,9 @@ function App() {
       <div className="row">
         <div className="col-md-3 left-column">
           {/* Left column content */}
-          <h1 className="task-connect-title">TaskConnect</h1>
+          <Link to="/" className="task-connect-link">
+            <h1 className="task-connect-title">TaskConnect</h1>
+          </Link> 
   <div className="search-bar">
     <nav className="navbar bg-body-tertiary">
       <div className="container-fluid">
@@ -134,9 +150,47 @@ function App() {
                 </ul>
                 
                 <button type="button" className="btn btn-outline-info" onClick={() => setIsAddTaskOpen(true)}>Add Task</button>
-                <span className="navbar-text">
-                  | Invite +
-                </span>
+                <button type="button" className="btn btn-outline-warning" onClick={handleInviteClick } style={{ marginLeft: '10px' }}>Invite +</button>
+                {/* Invitation Popup */}
+                {isInviteOpen && (
+                  <div className="invite-popup">
+                    <h3>Invite a Friend</h3>
+                    <input
+                      type="email"
+                      placeholder="Enter email"
+                      value={invitedEmail}
+                      onChange={(e) => setInvitedEmail(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleInviteSubmit}
+                    >
+                      Send Invitation
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setIsInviteOpen(false)}
+                    >
+                      Cancel
+                    </button>
+                </div>
+                )}
+                {/* Invitation Sent Popup */}
+                {isInvitationSent && (
+                  <div className="invite-popup">
+                    <h3>On The Way! 📬</h3>
+                    <p>Your invitation has been successfully sent!</p>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setIsInvitationSent(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </nav>
@@ -149,28 +203,20 @@ function App() {
           </form>
         </div>
       </nav>
-          {/* Rest of your content */}
+          {/* Routing */}
           <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} />
           <Switch>
-              <Route path="/tasks">
-                <Tasks tasks={tasks} />
-              </Route>
-              <Route path="/notes">
-                <Notes />
-              </Route>
-              <Route path="/calendar">
-                <Calendar />
-              </Route>
-            </Switch>
+            <Route path="/tasks">
+              <Tasks tasks={tasks} />
+            </Route>
+            <Route path="/notes">
+              <Notes />
+            </Route>
+            <Route path="/calendar">
+              <Calendar tasks={tasks} />
+            </Route>
+          </Switch>
             {/*  */}
-          {/* <div className="task-list">
-            <h2>Tasks</h2>
-            <ul>
-              {tasks.map((task, index) => (
-                <li key={index}>{task}</li>
-              ))}
-            </ul>
-          </div> */}
         </div>
       </div>
     </div>
