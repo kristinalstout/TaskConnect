@@ -284,77 +284,12 @@ class IndividualTaskById(Resource):
             return make_response(new_error, 400)
     
 
-    def delete(self, id):
-        task = IndividualTask.query.filter(IndividualTask.id==id).first()
-        db.session.delete(task)
-        db.session.commit()
-        return make_response({'message': 'Individual task deleted successfully'}, 200)
+# Views go here!
 
-class IndividualNotes(Resource):
-    def get(self):
-        notes = IndividualNote.query.all()
-        note_list = [note.to_dict(rules=('-user.individualnotes',)) for note in notes]
-        return make_response(note_list, 200)
+@app.route('/')
+def index():
+    return '<h1>Phase 4 Project Server</h1>'
 
-    def post(self):
-        new_note = Note()
-        data = request.get_json()
-
-        try:
-            for key in data:
-                setattr(new_note, key, data[key])
-            db.session.add(new_note)
-            db.session.commit()
-            return make_response(new_note.to_dict(rules=('-users',)), 201) 
-        except ValueError as error:
-            new_error = {"error": str(error)}
-        return make_response(new_error, 400)
-
-
-class IndividualNoteById(Resource):
-
-    def get(self, id):
-        note = IndividualNoteById.query.filter(IndividualNote.id==id).first()
-        if not note: 
-            return make_response({'note not found'}, 404)
-        return make_response(note.to_dict(), 200)
-    
-    def patch(self,id):
-        data = request.get_json()
-        note = IndividualNoteById.query.filter(IndividualNote.id==id).first()
-        if not note:
-            return make_response({"error: note not found"}, 404)
-        
-        try:
-            for key in data:
-                setattr(note, key, data[key])            
-            db.session.add(note)
-            db.session.commit()
-
-            return make_response(note.to_dict(rules=("-users",)), 202)
-        except ValueError as error:
-            new_error = {"error": str(error)}
-            return make_response(new_error, 400)
-        
-
-    def delete(self, id):
-        note = IndividualNoteById.query.filter(IndividualNotes.id==id).first()
-        db.session.delete(note)
-        db.session.commit()
-        return make_response({}, 204)
-
-api.add_resource(Users, '/users')
-api.add_resource(UserById, '/users/<int:id>')
-api.add_resource(Groups, '/groups')
-api.add_resource(GroupById, '/groups/<int:id>')
-api.add_resource(CollaborativeTasks, '/collaborativetasks')
-api.add_resource(CollaborativeTaskById, '/collaborativetasks/<int:id>')
-api.add_resource(CollaborativeNotes, '/collaborativenotes')
-api.add_resource(CollaborativeNoteById, '/collaborativenotes/<int:id>')
-api.add_resource(IndividualTasks, '/individualtasks')
-api.add_resource(IndividualTaskById, '/individualtasks/<int:id>')
-api.add_resource(IndividualNotes, '/individualnotes')
-api.add_resource(IndividualNoteById, '/individualnotes/<int:id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

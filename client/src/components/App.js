@@ -18,6 +18,8 @@ function App() {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [invitedEmail, setInvitedEmail] = useState('');
   const [isInvitationSent, setIsInvitationSent] = useState(false);
+  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -50,6 +52,10 @@ function App() {
   //   },
   // });
     
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(true);
+  }
 
   return (
     <div className="container-fluid">
