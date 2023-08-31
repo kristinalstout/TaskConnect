@@ -21,7 +21,7 @@ class User(db.Model, SerializerMixin):
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     task_id = db.Column(db.Integer, db.ForeignKey('collaborativetasks.id'))
     note_id = db.Column(db.Integer, db.ForeignKey('collaborativenotes.id'))
-
+    
 
     serialize_rules = ("-groups.user", "-collaborativetasks.user", "-collaborativenotes.user")
 
@@ -59,6 +59,8 @@ class CollaborativeTask(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     task = db.Column(db.Text, nullable=False)
+    status = db.Column(db.Boolean, default=False)
+
 
     serialize_rules = ("-group.collaborativetasks", "-task.collaborativetasks")
 
@@ -75,6 +77,7 @@ class IndividualTask(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     task = db.Column(db.Text, nullable=False)
+    status = db.Column(db.Boolean, default=False)
 
 
     serialize_rules = ("-user.individualtasks", )
