@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
@@ -31,28 +32,20 @@ class Groups(Resource):
         groups = Group.query.all()
         group_list = [group.to_dict() for group in groups]
         return make_response(group_list, 200)
-        
-    
+
     def post(self):
         new_group = Group()
         data = request.get_json()
+
         try:
             for key in data:
                 setattr(new_group, key, data[key])
             db.session.add(new_group)
             db.session.commit()
-            return make_response(new_group.to_dict(rules=('-users',)), 201) 
+            return make_response(new_group.to_dict(rules=("-notes","-tasks",)), 201) 
         except ValueError as error:
             new_error = {"error": str(error)}
-            return make_response(new_error, 400)
-
-
-    def post(self):
-        data = request.get_json()
-        new_group = Group(user_id=data['user_id'], group=data['group'])
-        db.session.add(new_group)
-        db.session.commit()
-        return make_response({'message': 'Group created successfully', 'id': new_group.id}, 201)
+        return make_response(new_error, 400)
 
 class GroupById(Resource):
 
@@ -88,16 +81,23 @@ class GroupById(Resource):
     
 class Users(Resource):
     def get(self):
-       
-        users = [user.to_dict(rules=('-groups.user', '-collaborativetasks.user', '-collaborativenotes.user',)) for user in User.query.all()]
-        return make_response(users, 200)
+        users = User.query.all()
+        user_list = [user.to_dict(rules=('-groups.user', '-collaborativetasks.user', '-collaborativenotes.user')) for user in users]
+        return make_response(user_list, 200)
 
     def post(self):
+        new_user = User()
         data = request.get_json()
-        new_user = User(name=data['name'])
-        db.session.add(new_user)
-        db.session.commit()
-        return make_response({'message': 'User created successfully', 'id': new_user.id}, 201)
+
+        try:
+            for key in data:
+                setattr(new_user, key, data[key])
+            db.session.add(new_user)
+            db.session.commit()
+            return make_response(new_user.to_dict(rules=('-posts',)), 201) 
+        except ValueError as error:
+            new_error = {"error": str(error)}
+        return make_response(new_error, 400)
 
 class UserById(Resource):
 
@@ -111,7 +111,7 @@ class UserById(Resource):
         data = request.get_json()
         user = UserById.query.filter(Users.id==id).first()
         if not user:
-            return make_response({"error: note not found"}, 404)
+            return make_response({"error: user not found"}, 404)
         
         try:
             for key in data:
@@ -119,7 +119,7 @@ class UserById(Resource):
             db.session.add(user)
             db.session.commit()
 
-            return make_response(user.to_dict(rules=("-users",)), 202)
+            return make_response(user.to_dict(rules=("-notes","-tasks",)), 202)
         except ValueError as error:
             new_error = {"error": str(error)}
             return make_response(new_error, 400)
@@ -135,14 +135,22 @@ class UserById(Resource):
 class CollaborativeTasks(Resource):
     def get(self):
         tasks = CollaborativeTask.query.all()
-        task_list = [task.to_dict(rules=('-group.collaborativetasks', '-task.collaborativetasks',)) for task in tasks]
+        task_list = [task.to_dict(rules=('-group.collaborativetasks', '-task.collaborativetasks')) for task in tasks]
         return make_response(task_list, 200)
 
     def post(self):
-        new_task = CollaborativeTask()
-        db.session.add(new_task)
-        db.session.commit()
-        return make_response({'message': 'Collaborative task created successfully', 'id': new_task.id}, 201)
+        new_task = Task()
+        data = request.get_json()
+
+        try:
+            for key in data:
+                setattr(new_task, key, data[key])
+            db.session.add(new_task)
+            db.session.commit()
+            return make_response(new_task.to_dict(rules=('-users',)), 201) 
+        except ValueError as error:
+            new_error = {"error": str(error)}
+        return make_response(new_error, 400)
 
 
 class CollaborativeTaskById(Resource):
@@ -184,11 +192,18 @@ class CollaborativeNotes(Resource):
         return make_response(note_list, 200)
 
     def post(self):
+        new_note = Note()
         data = request.get_json()
-        new_note = CollaborativeNote(note=data['note'])
-        db.session.add(new_note)
-        db.session.commit()
-        return make_response({'message': 'Collaborative note created successfully', 'id': new_note.id}, 201)
+
+        try:
+            for key in data:
+                setattr(new_note, key, data[key])
+            db.session.add(new_note)
+            db.session.commit()
+            return make_response(new_note.to_dict(rules=('-users',)), 201) 
+        except ValueError as error:
+            new_error = {"error": str(error)}
+        return make_response(new_error, 400)
 
 class CollaborativeNoteById(Resource):
     
@@ -211,9 +226,9 @@ class CollaborativeNoteById(Resource):
             db.session.commit()
 
             return make_response(note.to_dict(rules=("-users",)), 202)
-        except ValueError as error:f
-        new_error = {"error": str(error)}
-        return make_response(new_error, 400)
+        except ValueError as error:
+            new_error = {"error": str(error)}
+            return make_response(new_error, 400)
         
     def delete(self, id):
         note = CollaborativeNoteById.query.filter( CollaborativeNotes.id==id).first()
@@ -228,11 +243,18 @@ class IndividualTasks(Resource):
         return make_response(task_list, 200)
 
     def post(self):
+        new_task = Task()
         data = request.get_json()
-        new_task = IndividualTask(user_id=data['user_id'], task=data['task'])
-        db.session.add(new_task)
-        db.session.commit()
-        return make_response({'message': 'Individual task created successfully', 'id': new_task.id}, 201)
+
+        try:
+            for key in data:
+                setattr(new_task, key, data[key])
+            db.session.add(new_task)
+            db.session.commit()
+            return make_response(new_task.to_dict(rules=('-users',)), 201) 
+        except ValueError as error:
+            new_error = {"error": str(error)}
+        return make_response(new_error, 400)
 
 
 class IndividualTaskById(Resource):
@@ -262,70 +284,12 @@ class IndividualTaskById(Resource):
             return make_response(new_error, 400)
     
 
-    def delete(self, id):
-        task = IndividualTask.query.filter(IndividualTask.id==id).first()
-        db.session.delete(task)
-        db.session.commit()
-        return make_response({'message': 'Individual task deleted successfully'}, 200)
+# Views go here!
 
-class IndividualNotes(Resource):
-    def get(self):
-        notes = IndividualNote.query.all()
-        note_list = [note.to_dict(rules=('-user.individualnotes',)) for note in notes]
-        return make_response(note_list, 200)
+@app.route('/')
+def index():
+    return '<h1>Phase 4 Project Server</h1>'
 
-    def post(self):
-        data = request.get_json()
-        new_note = IndividualNote(user_id=data['user_id'], note=data['note'])
-        db.session.add(new_note)
-        db.session.commit()
-        return make_response({'message': 'Individual note created successfully', 'id': new_note.id}, 201)
-
-
-class IndividualNoteById(Resource):
-
-    def get(self, id):
-        note = IndividualNoteById.query.filter(IndividualNote.id==id).first()
-        if not note: 
-            return make_response({'note not found'}, 404)
-        return make_response(note.to_dict(), 200)
-    
-    def patch(self,id):
-        data = request.get_json()
-        note = IndividualNoteById.query.filter(IndividualNote.id==id).first()
-        if not note:
-            return make_response({"error: note not found"}, 404)
-        
-        try:
-            for key in data:
-                setattr(note, key, data[key])            
-            db.session.add(note)
-            db.session.commit()
-
-            return make_response(note.to_dict(rules=("-users",)), 202)
-        except ValueError as error:
-            new_error = {"error": str(error)}
-            return make_response(new_error, 400)
-        
-
-    def delete(self, id):
-        note = IndividualNoteById.query.filter(IndividualNotes.id==id).first()
-        db.session.delete(note)
-        db.session.commit()
-        return make_response({}, 204)
-
-api.add_resource(Users, '/users')
-api.add_resource(UserById, '/users/<int:user_id>')
-api.add_resource(Groups, '/groups')
-api.add_resource(GroupById, '/groups/<int:group_id>')
-api.add_resource(CollaborativeTasks, '/collaborativetasks')
-api.add_resource(CollaborativeTaskById, '/collaborativetasks/<int:task_id>')
-api.add_resource(CollaborativeNotes, '/collaborativenotes')
-api.add_resource(CollaborativeNoteById, '/collaborativenotes/<int:note_id>')
-api.add_resource(IndividualTasks, '/individualtasks')
-api.add_resource(IndividualTaskById, '/individualtasks/<int:task_id>')
-api.add_resource(IndividualNotes, '/individualnotes')
-api.add_resource(IndividualNoteById, '/individualnotes/<int:id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
