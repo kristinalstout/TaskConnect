@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Tasks({tasks}){
+function Tasks({tasks, setTasks}){
   //note to self, need to add status to backend column. Also need to add group property
   const handleStatusClick = (taskId) => {
     const updatedTasks = tasks.map((task) => {
