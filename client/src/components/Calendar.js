@@ -21,15 +21,21 @@ const myEventsList = [
 const MyCalendar = ({ tasks }) => {
   const eventList = tasks.map((task) => ({
     title: task.task,
-    start: new Date(task.dueDate), // Uses the dueDate from the task
-    end: new Date(task.dueDate),
+    start: new Date(task.dueDate + "T00:00:00Z"),
+    end: new Date(task.dueDate + "T00:00:00Z"),
+  }));
+
+  const eventListAdjusted = eventList.map((event) => ({
+    ...event,
+    start: new Date(event.start.getTime() + 86400000), // Add 1 day (in milliseconds)
+    end: new Date(event.end.getTime() + 86400000),     // Add 1 day (in milliseconds)
   }));
 
   return (
     <div>
       <Calendar
         localizer={localizer}
-        events={eventList} 
+        events={eventListAdjusted}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
@@ -37,6 +43,7 @@ const MyCalendar = ({ tasks }) => {
     </div>
   );
 };
+
 
 
 export default MyCalendar;
