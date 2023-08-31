@@ -15,7 +15,9 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
 }
+/* right column */
 
+/* Nav Bar styling */
 .navbar {
   background-color: var(--primary-color);
   padding: 10px 0;
@@ -37,9 +39,106 @@ body {
   display: flex;
 }
 
+.navbar-button {
+  background: none;
+  border: none;
+  color: #007bff; /* Blue color, adjust as needed */
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  font: inherit;
+}
+
 
 .container-fluid {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+
+/* new task popup styling */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Invite popup */
+.invite-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+
+
+/* left column */
+/* Center the content vertically and horizontally */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  background-color: lightgray;
+  height: 100vh; /* Make the left column full height */
+  align-items: center; /* Center items horizontally */
+  justify-content: flex-start; /* Align items to the top */
+  padding-top: 20px; /* Add padding to the top */
+}
+
+
+/* TaskConnect title */
+.task-connect-title {
+  font-family: 'Oswald', sans-serif;
+  background-image: linear-gradient(45deg, #8e44ad, #3498db);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-align: center; /* Center the text within its container */
+  margin: 0; /* Remove default margin for h1 element */
+  padding-bottom: 10px;
+}
+.task-connect-link {
+  text-decoration: none; /* Remove underline */
+}
+
+/* search form */
+.left-column .navbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+/* black lines css */
+.black-line-1, .black-line-2, .black-line-3, .black-line-4 {
+  width: 100%;
+  height: 1px;
+  background-color: black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* styling for specific black lines */
+.black-line-1 {
+  margin-top: 10px; 
+  border: 2px solid black;
 }
