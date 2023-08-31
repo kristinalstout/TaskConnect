@@ -3,11 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import 'jquery/dist/jquery.slim.min.js'; // Import jQuery
 import 'popper.js/dist/umd/popper.min.js'; // Import Popper.js
 import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap JS
+// import { useFormik } from 'formik';
+// import * as yup from 'yup';
 import AddTaskForm from './AddTaskForm';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Notes from "./Notes";
 import Tasks from "./Tasks";
-import Calendar from "./Calendar";
+import MyCalendar from "./Calendar";
 
 function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -33,6 +35,22 @@ function App() {
     setIsInvitationSent(false); 
   };
 
+  // const formSchema = yup.object().shape({
+  //   email: yup.string().email('Invalid email').required('Email is required'),
+  //   password: yup.string().required('Password is required'),
+  // });
+
+  // const formik = useFormik({
+  //   initialValues: {
+  //     email: '',
+  //     password: '',
+  //   },
+  //   validationSchema: formSchema,
+  //   onSubmit: (values) => {
+  //   },
+  // });
+    
+
   return (
     <div className="container-fluid">
       <div className="row">
@@ -41,6 +59,7 @@ function App() {
           <Link to="/" className="task-connect-link">
             <h1 className="task-connect-title">TaskConnect</h1>
           </Link> 
+          {/* left search bar */}
   <div className="search-bar">
     <nav className="navbar bg-body-tertiary">
       <div className="container-fluid">
@@ -51,6 +70,7 @@ function App() {
     </nav>
     <div className="black-line-1"></div>
     <div className="black-line-2"></div>
+    {/* Groups checkbox */}
     <div className="checkbox-section">
       <h4 className="group-header">Groups</h4>
       <div className="form-check">
@@ -73,6 +93,7 @@ function App() {
       </div>
     </div>
     <div className="black-line-3"></div>
+    {/* spaces checkbox */}
     <div className="checkbox-section">
       <h4 className="group-header">Spaces</h4>
       <div className="form-check">
@@ -101,33 +122,65 @@ function App() {
       </div>
     </div>
     <div className="black-line-4"></div>
-    {isLoginFormOpen ? (
-              <div>
-                <div className="mb-3">
-                  <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                  <input type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com" />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="inputPassword" className="col-form-label">Password</label>
-                  <input type="password" className="form-control" id="inputPassword" />
-                </div>
-                <button type="button" className="btn btn-primary">Sign in</button>
-              </div>
-            ) : (
-              <div>
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => setIsLoginFormOpen(true)}
-                >
-                  PROFILE
-                </button>
-        <button type="button" className="btn btn-outline-secondary" style={{ marginLeft: '10px' }}>SETTINGS</button>
-      </div>
-    )}
+    {/* Login form */}
+    {/* {isLoginFormOpen ? (
+      <form onSubmit={formik.handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+          />
+          {formik.errors.email && (
+            <p className="text-danger">{formik.errors.email}</p>
+          )}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="col-form-label">
+            Password
+          </label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            name="password"
+            onChange={formik.handleChange}
+            value={formik.values.password}
+          />
+          {formik.errors.password && (
+            <p className="text-danger">{formik.errors.password}</p>
+          )}
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Sign in
+        </button>
+      </form>
+) : (
+  <div>
+    <button
+      type="button"
+      className="btn btn-outline-primary"
+      onClick={() => setIsLoginFormOpen(true)}
+    >
+      PROFILE
+    </button>
   </div>
-</div>
+)} */}
 
+{/* Setting button */}
+<button type="button" className="btn btn-outline-secondary" style={{ marginLeft: '10px' }}>
+  SETTINGS
+</button>
+</div>
+  </div>
+
+  {/* Right column content */}
         <div className="col-md-9"> {/* 80% width column */}
           {/* Navbar code */}
           <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -145,7 +198,7 @@ function App() {
                     <Link to="/notes" className="nav-link"> Notes |</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/calendar" className="nav-link"> Calendar |</Link>
+                    <Link to="/calendar" className="nav-link"> Calendar |</Link> 
                   </li>
                 </ul>
                 
@@ -213,7 +266,7 @@ function App() {
               <Notes />
             </Route>
             <Route path="/calendar">
-              <Calendar tasks={tasks} />
+              <MyCalendar />
             </Route>
           </Switch>
             {/*  */}

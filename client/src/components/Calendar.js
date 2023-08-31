@@ -1,34 +1,23 @@
-import React from 'react';
-import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-// Set the locale to "en-GB"
-moment.locale('en-GB');
+import React, { useState } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
-// Create a localizer using moment
-const localizer = momentLocalizer(moment);
+function MyCalendar() {
+  const [selectedDate, setSelectedDate] = useState(Day);
 
-// Calendar component
-function Calendar({ tasks }) {
-  // Convert tasks to events for the calendar
-  const events = tasks.map(task => ({
-    title: task.title,
-    start: task.dueDate,
-    end: task.dueDate, // You can set end time if needed
-  }));
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
   return (
-    <div id="calendar" style={{ height: 600 }}>
-      {/* Render the calendar using react-big-calendar */}
-      <BigCalendar
-        localizer={localizer}
-        events={events}
-        step={60}
-        views={['month', 'week', 'day']}
-        defaultDate={new Date()} // Use the current date as the default date for the calendar
+    <div>
+      <h1>My Calendar</h1>
+      <Calendar
+        onChange={handleDateChange}
+        value={selectedDate}
       />
     </div>
   );
 }
 
-export default Calendar;
+export default MyCalendar;
