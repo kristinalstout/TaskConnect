@@ -17,6 +17,7 @@ function App() {
   const [invitedEmail, setInvitedEmail] = useState('');
   const [isInvitationSent, setIsInvitationSent] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState([]);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -40,6 +41,10 @@ function App() {
     } else {
       setSelectedGroups([...selectedGroups, group]);
     }
+  }
+
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(true);
   }
 
   return (
