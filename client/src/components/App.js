@@ -16,6 +16,7 @@ function App() {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [invitedEmail, setInvitedEmail] = useState('');
   const [isInvitationSent, setIsInvitationSent] = useState(false);
+  const [selectedGroups, setSelectedGroups] = useState([]);
 
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -32,6 +33,14 @@ function App() {
     setIsInviteOpen(true);
     setIsInvitationSent(false); 
   };
+
+  const handleGroupClick = (group) => {
+    if (selectedGroups.includes(group)) {
+      setSelectedGroups(selectedGroups.filter(item => item !== group));
+    } else {
+      setSelectedGroups([...selectedGroups, group]);
+    }
+  }
 
   return (
     <div className="container-fluid">
@@ -54,19 +63,19 @@ function App() {
     <div className="checkbox-section">
       <h4 className="group-header">Groups</h4>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="goblinsCheckbox" style={{ borderColor: 'green' }} />
+        <input className="form-check-input" type="checkbox" value="" id="goblinsCheckbox" style={{ borderColor: 'green' }} onChange={() => handleGroupCheckboxChange('goblins')}/>
         <label className="form-check-label" htmlFor="goblinsCheckbox">
           Goblins
         </label>
       </div>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="familyCheckbox" style={{ borderColor: 'blue' }} />
+        <input className="form-check-input" type="checkbox" value="" id="familyCheckbox" style={{ borderColor: 'blue' }} onChange={() => handleGroupCheckboxChange('family')}/>
         <label className="form-check-label" htmlFor="familyCheckbox">
           Family
         </label>
       </div>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="friendsCheckbox" style={{ borderColor: 'red' }} />
+        <input className="form-check-input" type="checkbox" value="" id="friendsCheckbox" style={{ borderColor: 'red' }} onChange={() => handleGroupCheckboxChange('friends')}/>
         <label className="form-check-label" htmlFor="friendsCheckbox">
           Friends
         </label>
@@ -76,25 +85,25 @@ function App() {
     <div className="checkbox-section">
       <h4 className="group-header">Spaces</h4>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="workCheckbox" style={{ borderColor: 'black' }} />
+        <input className="form-check-input" type="checkbox" value="" id="workCheckbox" style={{ borderColor: 'black' }}  onChange={() => handleGroupCheckboxChange('work')} />
         <label className="form-check-label" htmlFor="workCheckbox">
           Work
         </label>
       </div>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="schoolCheckbox" style={{ borderColor: 'purple' }} />
+        <input className="form-check-input" type="checkbox" value="" id="schoolCheckbox" style={{ borderColor: 'purple' }}  onChange={() => handleGroupCheckboxChange('school')} />
         <label className="form-check-label" htmlFor="schoolCheckbox">
           School
         </label>
       </div>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="homeCheckbox" style={{ borderColor: 'yellow' }} />
+        <input className="form-check-input" type="checkbox" value="" id="homeCheckbox" style={{ borderColor: 'yellow' }}  onChange={() => handleGroupCheckboxChange('home')}/>
         <label className="form-check-label" htmlFor="homeCheckbox">
           Home
         </label>
       </div>
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="socialCheckbox" style={{ borderColor: 'turquoise' }} />
+        <input className="form-check-input" type="checkbox" value="" id="socialCheckbox" style={{ borderColor: 'turquoise' }}  onChange={() => handleGroupCheckboxChange('social')}/>
         <label className="form-check-label" htmlFor="socialCheckbox">
           Social
         </label>
@@ -207,7 +216,7 @@ function App() {
           <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} />
           <Switch>
             <Route path="/tasks">
-              <Tasks tasks={tasks} />
+              <Tasks tasks={tasks.filter(task => selectedGroups.includes(task.group))} />
             </Route>
             <Route path="/notes">
               <Notes />
