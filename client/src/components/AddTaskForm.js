@@ -14,11 +14,10 @@ function AddTaskForm({ isOpen, onClose, onAddTask }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAddTask({ task, dueDate: new Date(dueDate).toISOString() }); // Convert to ISO string
+    onAddTask({ task, dueDate });
     setTask("");
     setDueDate("");
     onClose();
-
   };
 
   if (!isOpen) {
