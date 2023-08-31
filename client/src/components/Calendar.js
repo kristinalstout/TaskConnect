@@ -1,23 +1,42 @@
-import React, { useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import React from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import '../calendarStyles.scss';
 
-function MyCalendar() {
-  const [selectedDate, setSelectedDate] = useState(Day);
+const localizer = momentLocalizer(moment);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+const myEventsList = [
+  {
+    title: 'Event 1',
+    start: new Date(2023, 8, 1, 10, 0), // September 1, 2023 at 10:00 AM
+    end: new Date(2023, 8, 1, 12, 0),   // September 1, 2023 at 12:00 PM
+  },
+  {
+    title: 'Event 2',
+    start: new Date(2023, 8, 5, 14, 0), // September 5, 2023 at 2:00 PM
+    end: new Date(2023, 8, 5, 16, 0),   // September 5, 2023 at 4:00 PM
+  },
+];
+
+const MyCalendar = ({ tasks }) => {
+  const eventList = tasks.map((task) => ({
+    title: task.task,
+    start: new Date(task.dueDate), // Uses the dueDate from the task
+    end: new Date(task.dueDate),
+  }));
 
   return (
     <div>
-      <h1>My Calendar</h1>
       <Calendar
-        onChange={handleDateChange}
-        value={selectedDate}
+        localizer={localizer}
+        events={eventList} 
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500 }}
       />
     </div>
   );
-}
+};
+
 
 export default MyCalendar;

@@ -9,7 +9,7 @@ import AddTaskForm from './AddTaskForm';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Notes from "./Notes";
 import Tasks from "./Tasks";
-import MyCalendar from "./Calendar";
+import Calendar from "./Calendar";
 
 function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -198,7 +198,7 @@ function App() {
                     <Link to="/notes" className="nav-link"> Notes |</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/calendar" className="nav-link"> Calendar |</Link> 
+                    <Link to="/calendar" className="nav-link"> Calendar |</Link>
                   </li>
                 </ul>
                 
@@ -257,7 +257,8 @@ function App() {
         </div>
       </nav>
           {/* Routing */}
-          <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} />
+          <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} // Pass the callback here 
+          />          
           <Switch>
             <Route path="/tasks">
               <Tasks tasks={tasks} />
@@ -266,7 +267,7 @@ function App() {
               <Notes />
             </Route>
             <Route path="/calendar">
-              <MyCalendar />
+              <Calendar tasks={tasks} />
             </Route>
           </Switch>
             {/*  */}
