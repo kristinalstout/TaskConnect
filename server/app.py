@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Group, User, CollaborativeTask, IndividualTask, CollaborativeNote, IndividualNote 
+from models import db, Group, User, Task, Note 
 from flask import Flask, request, make_response
 import os
 
@@ -132,7 +132,7 @@ class UserById(Resource):
         return make_response({}, 204)
 
 
-class CollaborativeTasks(Resource):
+class Tasks(Resource):
     def get(self):
         tasks = CollaborativeTask.query.all()
         task_list = [task.to_dict(rules=('-group.collaborativetasks', '-task.collaborativetasks')) for task in tasks]
@@ -153,17 +153,17 @@ class CollaborativeTasks(Resource):
         return make_response(new_error, 400)
 
 
-class CollaborativeTaskById(Resource):
+class TaskById(Resource):
 
     def get(self, id):
-        task = CollaborativeTaskById.query.filter(CollaborativeTasks.id==id).first()
+        task = TaskById.query.filter(Tasks.id==id).first()
         if not task: 
             return make_response({'note not found'}, 404)
         return make_response(task.to_dict(), 200)
     
     def patch(self,id):
         data = request.get_json()
-        task= CollaborativeTaskById.query.filter(CollaborativeTasks.id==id).first()
+        task= TaskById.query.filter(Tasks.id==id).first()
         if not task:
             return make_response({"error: note not found"}, 404)
         
@@ -180,15 +180,15 @@ class CollaborativeTaskById(Resource):
         
 
     def delete(self, id):
-        note = CollaborativeTaskById.query.filter(CollaborativeTasks.id==id).first()
+        note = TaskById.query.filter(Tasks.id==id).first()
         db.session.delete(note)
         db.session.commit()
         return make_response({}, 204)
 
-class CollaborativeNotes(Resource):
+class Notes(Resource):
     def get(self):
-        notes = CollaborativeNote.query.all()
-        note_list = [note.to_dict(rules=('-group.collaborativenotes',)) for note in notes]
+        notes = Note.query.all()
+        note_list = [note.to_dict(rules=('-group.notes',)) for note in notes]
         return make_response(note_list, 200)
 
     def post(self):
@@ -205,17 +205,17 @@ class CollaborativeNotes(Resource):
             new_error = {"error": str(error)}
         return make_response(new_error, 400)
 
-class CollaborativeNoteById(Resource):
+class NoteById(Resource):
     
     def get(self, id):
-        note =  CollaborativeNoteById.query.filter( CollaborativeNote.id==id).first()
+        note =  NoteById.query.filter(Note.id==id).first()
         if not note: 
             return make_response({'note not found'}, 404)
         return make_response(note.to_dict(), 200)
     
     def patch(self,id):
         data = request.get_json()
-        note = CollaborativeNoteById.query.filter(CollaborativeNote.id==id).first()
+        note = NoteById.query.filter(Note.id==id).first()
         if not note:
             return make_response({"error: note not found"}, 404)
         
@@ -231,60 +231,21 @@ class CollaborativeNoteById(Resource):
             return make_response(new_error, 400)
         
     def delete(self, id):
-        note = CollaborativeNoteById.query.filter( CollaborativeNotes.id==id).first()
+        note = NoteById.query.filter( Notes.id==id).first()
         db.session.delete(note)
         db.session.commit()
         return make_response({}, 204)
 
-class IndividualTasks(Resource):
-    def get(self):
-        tasks = IndividualTask.query.all()
-        task_list = [task.to_dict(rules=('-user.individualtasks',)) for task in tasks]
-        return make_response(task_list, 200)
-
-    def post(self):
-        new_task = Task()
-        data = request.get_json()
-
-        try:
-            for key in data:
-                setattr(new_task, key, data[key])
-            db.session.add(new_task)
-            db.session.commit()
-            return make_response(new_task.to_dict(rules=('-users',)), 201) 
-        except ValueError as error:
-            new_error = {"error": str(error)}
-        return make_response(new_error, 400)
-
-
-class IndividualTaskById(Resource):
-
-    def get(self, id):
-        task = IndividualTask.filter(IndividualNote.id==id).first()
-        if not task:
-            return make_response({'task not found'}, 404)
-        return make_response(task.to_dict(), 200)
-
-    def patch(self, id):
-        
-        data = request.get_json()
-        task = IndividualTaskById.query.filter(IndividualTasks.id==id).first()
-        if not task:
-            return make_response({"error: note not found"}, 404)
-        
-        try:
-            for key in data:
-                setattr(task, key, data[key])            
-            db.session.add(task)
-            db.session.commit()
-
-            return make_response(task.to_dict(rules=("-users",)), 202)
-        except ValueError as error:
-            new_error = {"error": str(error)}
-            return make_response(new_error, 400)
-    
 
 # Views go here!
+api.add_resource(Users, '/users')
+api.add_resource(UserById, '/users/<int:id>')
+api.add_resource(Groups, '/groups')
+api.add_resource(GroupById, '/groups/<int:id>')
+api.add_resource(Tasks, '/tasks')
+api.add_resource(TaskById, '/tasks/<int:id>')
+api.add_resource(Notes, '/notes')
+api.add_resource(NoteById, '/notes/<int:id>')
 
 @app.route('/')
 def index():

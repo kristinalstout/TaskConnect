@@ -19,11 +19,11 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String) 
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    task_id = db.Column(db.Integer, db.ForeignKey('collaborativetasks.id'))
-    note_id = db.Column(db.Integer, db.ForeignKey('collaborativenotes.id'))
+    task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
+    note_id = db.Column(db.Integer, db.ForeignKey('notes.id'))
     
 
-    serialize_rules = ("-groups.user", "-collaborativetasks.user", "-collaborativenotes.user")
+    serialize_rules = ("-groups.user", "-tasks.user", "-notes.user")
 
     @validates('name')
     def validate_name(self,key,name):
@@ -44,34 +44,14 @@ class Group(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     users = db.relationship("User", secondary="user_table")
-    task_id = db.relationship("CollaborativeTask", backref="group")
-    note_id = db.relationship("CollaborativeNote", backref="group")
+    task_id = db.relationship("Task", backref="group")
+    note_id = db.relationship("Note", backref="group")
 
 
-    serialize_rules = ("-users.group", "-collaborativetasks.group", "-collaborativenotes.group")
+    serialize_rules = ("-users.group", "-tasks.group", "-notes.group")
 
-
-
-class CollaborativeTask(db.Model, SerializerMixin):
-    __tablename__ = 'collaborativetasks'
-
-
-    id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    task = db.Column(db.Text, nullable=False)
-    status = db.Column(db.Boolean, default=False)
-
-
-    serialize_rules = ("-group.collaborativetasks", "-task.collaborativetasks")
-
-    @validates('task')
-    def validate_task(self,key,task):
-        if not task and task is not 1 <= task <= 500:
-            raise ValueError
-        return task
-
-class IndividualTask(db.Model, SerializerMixin):
-    __tablename__ = 'individualtasks'
+class Task(db.Model, SerializerMixin):
+    __tablename__ = 'tasks'
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -80,7 +60,7 @@ class IndividualTask(db.Model, SerializerMixin):
     status = db.Column(db.Boolean, default=False)
 
 
-    serialize_rules = ("-user.individualtasks", )
+    serialize_rules = ("-user.tasks", )
 
     @validates('task')
     def validate_task(self,key,task):
@@ -88,28 +68,8 @@ class IndividualTask(db.Model, SerializerMixin):
             raise ValueError
         return task
 
-
-class CollaborativeNote(db.Model, SerializerMixin):
-    __tablename__ = 'collaborativenotes'
-
-
-    id = db.Column(db.Integer, primary_key=True)
-    note = db.Column(db.Text, nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
-
-
-    serialize_rules = ("-group.collaborativenotes",)
-
-
-    @validates('note')
-    def validate_note(self,key,note):
-        if not note and not 1 <= note <= 500:
-            raise ValueError
-        return note
-
-
-class IndividualNote(db.Model, SerializerMixin):
-    __tablename__ = 'individualnotes'
+class Note(db.Model, SerializerMixin):
+    __tablename__ = 'notes'
 
 
     id = db.Column(db.Integer, primary_key=True)
@@ -117,7 +77,7 @@ class IndividualNote(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
-    serialize_rules = ("-user.individualnotes",)
+    serialize_rules = ("-user.notes",)
 
     @validates('note')
     def validate_note(self,key,note):
