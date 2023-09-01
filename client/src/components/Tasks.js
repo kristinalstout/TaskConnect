@@ -38,5 +38,4 @@ function Tasks({tasks, setTasks}){
     )
 }
 
-// onClick={() => handleStatusClick(task.id)}
 export default Tasks;
