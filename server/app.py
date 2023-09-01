@@ -1,15 +1,14 @@
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Group, User, Task, Note 
-from flask import Flask, request, make_response
+from sqlalchemy.orm import Session
+from models import db, Group, User, Task, Note
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATABASE = os.environ.get(
-    "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
+DATABASE = os.environ.get("DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
@@ -20,10 +19,43 @@ migrate = Migrate(app, db)
 api = Api(app)
 db.init_app(app)
 
+CORS(app, resources={
+    r'/login': {'origins': '*'},
+    r'/logout': {'origins': '*'},
+})
 
 @app.route('/')
 def home():
     return '<Welcome to TaskConnect Server!</h1>'
+
+@app.route('/login', methods=['POST'])
+def login():
+    """
+    Sign in a user.
+    """
+    data = request.get_json()
+
+    try:
+        user = User.query.filter_by(email=data['email']).first()
+        if user and user.check_password(data['password']):
+            session = Session(user_id=user.id)
+            db.session.add(session)
+            db.session.commit()
+
+            response = {
+                'id': session.id,
+                'username': user.name,  # Use the 'name' attribute instead of 'username'
+            }
+            return make_response(response, 200)
+    except:
+        response = {'error': 'Invalid email or password.'}
+        return make_response(response, 401)
+
+    
+    CORS(app, resources={
+    r'/login': {'origins': '*'},
+    r'/logout': {'origins': '*'},
+})
 
 
 class Groups(Resource):
