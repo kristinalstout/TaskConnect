@@ -1,10 +1,14 @@
-import React, {useState} from "react";
+import React from 'react';
 
-function Settings({}){
-
-    return(
-        pass
-    )
+function Settings({ isDarkMode, toggleMode }) {
+  return (
+    <div>
+      <h2>Settings</h2>
+      <button onClick={toggleMode}>
+        Toggle Mode
+      </button>
+    </div>
+  );
 }
 
 export default Settings;

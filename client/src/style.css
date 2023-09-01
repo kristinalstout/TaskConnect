@@ -210,3 +210,18 @@ textarea:focus {
   margin-top: 10px; 
   border: 2px solid black;
 }
+
+.app {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.light {  /* Styles specific to light mode */
+  background-color: white;
+  color: black;
+}
+
+.dark {  /* Styles specific to light mode */
+  background-color: black;
+  color: white;
+}
+

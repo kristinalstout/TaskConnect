@@ -13,6 +13,8 @@ import Calendar from './Calendar';
 import { nanoid } from 'nanoid';
 import NotesList from './NotesList';
 import AddNote from './AddNote';
+import Settings from '.Settings';
+import './style.css';
 
 function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -25,7 +27,14 @@ function App() {
   const [loggedInMessage, setLoggedInMessage] = useState('Welcome! Please Login');
   const [isOnTasksRoute, setIsOnTasksRoute] = useState(true);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
-  // const [darkMode, SetDarkMode] = useState(false);
+  const [IsDarkMode, SetIsDarkMode] = useState(false);
+
+
+  const toggleMode = (IsDarkMode) => {
+    SetIsDarkMode(prevMode => !prevMode);
+  };
+
+ 
 
   // Initialize the 'notes' state variable
   const [notes, setNotes] = useState([
@@ -53,7 +62,6 @@ function App() {
 
   const location = useLocation(); // Get the current route location
 
-  const [darkMode, setDarkMode] = useState(false); // toggle light/dark mode
 
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
