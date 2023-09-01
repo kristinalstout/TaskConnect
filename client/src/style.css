@@ -90,7 +90,75 @@ body {
   z-index: 1000;
 }
 
+/* settings button */
+/* .dark-mode {
+  background-color: black;
+} */
 
+
+/* notes */
+.notes-list {
+  display: flex; /* Use flex to arrange notes horizontally */
+  flex-wrap: wrap; /* Allow notes to wrap to the next line if there's not enough space */
+  justify-content: flex-start; /* Start from the left side */
+  align-items: flex-start; /* Align notes to the top */
+  padding: 10px; /* Add padding to separate notes */
+  gap: 10px; /* Add a gap between notes */
+}
+
+.note.new {
+	background-color: #67d7cc;
+}
+
+textarea {
+	border: none;
+	resize: none;
+	background-color: #67d7cc;
+}
+
+textarea:focus {
+	outline: none;
+}
+
+.save {
+	background-color: #e1e1e1;
+	border: none;
+	border-radius: 15px;
+	padding: 5px 10px 5px 10px;
+}
+
+.save:hover {
+	background-color: #ededed;
+	cursor: pointer;
+}
+
+.note {
+  flex: 1; /* Make each note equally share the available space */
+  max-width: calc(33.33% - 20px); /* Adjust the width based on your layout (3 notes per row) */
+  background-color: #fef68a;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  white-space: pre-wrap;
+}
+
+.notes {
+  height: 500px; /* Set the height to match the calendar */
+  width: 100%; /* Set the width to 100% to fill the available space */
+  overflow: auto; /* Add scrollbars if content overflows */
+}
+
+.note-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.delete-icon {
+	cursor: pointer;
+}
 
 /* left column */
 /* Center the content vertically and horizontally */
