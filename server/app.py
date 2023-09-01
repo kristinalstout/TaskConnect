@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
 from models import db, Group, User, Task, Note
 import os
+from flask_cors import cross_origin
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get("DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
@@ -19,11 +20,13 @@ migrate = Migrate(app, db)
 api = Api(app)
 db.init_app(app)
 
-CORS(app, resources={
-    r'/login': {'origins': '*'},
-    r'/logout': {'origins': '*'},
-})
+# app.use(CORS({
+#   origin: ['http://localhost:3000', 'http://localhost:5000']
+# }))
 
+# CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+@cross_origin(origin="*")
 @app.route('/')
 def home():
     return '<Welcome to TaskConnect Server!</h1>'
@@ -52,10 +55,10 @@ def login():
         return make_response(response, 401)
 
     
-    CORS(app, resources={
-    r'/login': {'origins': '*'},
-    r'/logout': {'origins': '*'},
-})
+#     CORS(app, resources={
+#     r'/login': {'origins': '*'},
+#     r'/logout': {'origins': '*'},
+# })
 
 
 class Groups(Resource):
@@ -114,7 +117,7 @@ class GroupById(Resource):
 class Users(Resource):
     def get(self):
         users = User.query.all()
-        user_list = [user.to_dict(rules=('-groups.user', '-tasks.user', '-notes.user')) for user in users]
+        user_list = [user.to_dict(rules=('-groups.user', '-tasks.user', '-notes.user',)) for user in users]
         return make_response(user_list, 200)
 
     def post(self):
@@ -167,7 +170,7 @@ class UserById(Resource):
 class Tasks(Resource):
     def get(self):
         tasks = Task.query.all()
-        task_list = [task.to_dict(rules=('-group.tasks', '-task.tasks')) for task in tasks]
+        task_list = [task.to_dict(rules=()) for task in tasks]
         return make_response(task_list, 200)
 
     def post(self):

@@ -17,10 +17,10 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
 
-    user_tasks = db.relationship("Task", backref="user", overlaps="user,user_tasks")
-    user_notes = db.relationship("Note", backref="user", overlaps="user,user_notes")
+    tasks = db.relationship("Task", backref="user")
+    notes = db.relationship("Note", backref="user")
 
-    serialize_rules = ("-groups.user", "-tasks.user", "-notes.user")
+    serialize_rules = ("-groups.user", "-tasks.user", "-notes.user",)
 
     @validates('name')
     def validate_name(self, key, name):
@@ -34,7 +34,7 @@ class Group(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
 
-    group_users = db.relationship("User", backref="group", overlaps="user,user_groups")
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     serialize_rules = ("-users.group",)
 
@@ -46,7 +46,7 @@ class Task(db.Model, SerializerMixin):
     task = db.Column(db.Text, nullable=False)
     status = db.Column(db.Boolean, default=False)
 
-    task_users = db.relationship("User", backref="task", overlaps="user,user_tasks")
+    users = db.relationship("User", backref="task")
 
     serialize_rules = ("-user.tasks",)
 
@@ -63,7 +63,7 @@ class Note(db.Model, SerializerMixin):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    note_users = db.relationship("User", backref="note", overlaps="user,user_notes")
+    users = db.relationship("User", backref="note")
 
     serialize_rules = ("-user.notes",)
 
