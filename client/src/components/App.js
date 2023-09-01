@@ -8,6 +8,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'; // Import Bootstrap JS
 import AddTaskForm from './AddTaskForm';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Notes from "./Notes";
+
 import Tasks from "./Tasks";
 import Calendar from "./Calendar";
 
@@ -267,7 +268,7 @@ function App() {
           />          
           <Switch>
             <Route path="/tasks">
-              <Tasks tasks={tasks} />
+              <Tasks tasks={tasks} setTasks ={setTasks} />
             </Route>
             <Route path="/notes">
               <Notes />

@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 
 function Tasks({tasks, setTasks}){
-  //note to self, need to add status to backend column. Also need to add group property
+  
   const handleStatusClick = (taskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return { ...task, status: 'completed' };
-      }
+    let updatedTasks = tasks.map((task) => {
+      if (task.id === taskId){
+        return {...task, status: !task.status}
+      };
       return task;
     });
-    setTasks(updatedTasks);
-  };
+    setTasks(updatedTasks)
+  }
+
+  function taskStatus(status){
+    const displayStatus = status ===true? "Completed" : "Not Started"
+    return displayStatus
+  }
 
     return(
         <div className="task_page" >
@@ -18,7 +23,7 @@ function Tasks({tasks, setTasks}){
       <ul>
         {tasks.map((task) => (
           <li key={task.id}>
-            {task.title} - {task.status}
+            {task.task} - {taskStatus(task.status)} 
             <button onClick={() => handleStatusClick(task.id)}>
               Mark as Completed
             </button>
@@ -29,15 +34,5 @@ function Tasks({tasks, setTasks}){
     )
 }
 
+// onClick={() => handleStatusClick(task.id)}
 export default Tasks;
-
-
-
-/* <div className="task-list">
-            <h2>Tasks</h2>
-            <ul>
-              {tasks.map((task, index) => (
-                <li key={index}>{task}</li>
-              ))}
-            </ul>
-          </div> */
