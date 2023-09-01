@@ -46,7 +46,7 @@ class Task(db.Model, SerializerMixin):
     task = db.Column(db.Text, nullable=False)
     status = db.Column(db.Boolean, default=False)
 
-    users = db.relationship("User", backref="task")
+    # users = db.relationship("User", backref="task")
 
     serialize_rules = ("-user.tasks",)
 
