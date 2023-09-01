@@ -26,7 +26,7 @@ db.init_app(app)
 
 # CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-@cross_origin(origin="*")
+# @cross_origin(origin="*")
 @app.route('/')
 def home():
     return '<Welcome to TaskConnect Server!</h1>'
