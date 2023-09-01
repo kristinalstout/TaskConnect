@@ -39,11 +39,9 @@ const MyCalendar = ({ tasks }) => {
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
-      />
+        />
     </div>
   );
 };
-
-
 
 export default MyCalendar;

@@ -401,7 +401,7 @@ function App() {
           <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} />
           <Switch>
             <Route path="/tasks">
-              <Tasks tasks={tasks} />
+              <Tasks tasks={tasks} setTasks ={setTasks} />
             </Route>
             <Route path="/notes">
               {/* You should pass appropriate props to the Notes component */}

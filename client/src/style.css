@@ -96,7 +96,7 @@ body {
 } */
 
 
-/* notes */
+/* notes CSS*/
 .notes-list {
   display: flex; /* Use flex to arrange notes horizontally */
   flex-wrap: wrap; /* Allow notes to wrap to the next line if there's not enough space */
