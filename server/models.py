@@ -12,6 +12,7 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
+
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
@@ -21,7 +22,10 @@ class User(db.Model, SerializerMixin):
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
     note_id = db.Column(db.Integer, db.ForeignKey('notes.id'))
-    
+
+    user_tasks = db.relationship("Task", backref="user")
+    user_notes = db.relationship("Note", backref="user")
+
 
     serialize_rules = ("-groups.user", "-tasks.user", "-notes.user")
 
@@ -31,24 +35,20 @@ class User(db.Model, SerializerMixin):
             raise ValueError
         return name
 
-user_table = db.Table(
-    "user_table",
-    db.Base.metadata,
-    db.Column("user_id", db.ForeignKey("users.id")),
-    db.Column("user_name", db.ForeignKey("users.name")),
-)
 
 class Group(db.Model, SerializerMixin):
     __tablename__ = 'groups'
 
 
     id = db.Column(db.Integer, primary_key=True)
-    users = db.relationship("User", secondary="user_table")
-    task_id = db.relationship("Task", backref="group")
-    note_id = db.relationship("Note", backref="group")
+    name = db.Column(db.String)
+
+  
+    group_users = db.relationship("User", backref="group")
 
 
-    serialize_rules = ("-users.group", "-tasks.group", "-notes.group")
+    serialize_rules = ("-users.group",)
+
 
 class Task(db.Model, SerializerMixin):
     __tablename__ = 'tasks'
@@ -59,13 +59,15 @@ class Task(db.Model, SerializerMixin):
     task = db.Column(db.Text, nullable=False)
     status = db.Column(db.Boolean, default=False)
 
+    task_users = db.relationship("User", backref="task")
+
 
     serialize_rules = ("-user.tasks", )
-
+    
     @validates('task')
-    def validate_task(self,key,task):
-        if not task and task is not 1 <= task <= 500:
-            raise ValueError
+    def validate_task(self, key, task):
+        if not (1 <= task <= 500):
+            raise ValueError("Task value must be between 1 and 500")
         return task
 
 class Note(db.Model, SerializerMixin):
@@ -75,6 +77,8 @@ class Note(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    note_users = db.relationship("User", backref="note")
 
 
     serialize_rules = ("-user.notes",)

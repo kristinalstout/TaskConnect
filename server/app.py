@@ -82,7 +82,7 @@ class GroupById(Resource):
 class Users(Resource):
     def get(self):
         users = User.query.all()
-        user_list = [user.to_dict(rules=('-groups.user', '-collaborativetasks.user', '-collaborativenotes.user')) for user in users]
+        user_list = [user.to_dict(rules=('-groups.user', '-tasks.user', '-notes.user')) for user in users]
         return make_response(user_list, 200)
 
     def post(self):
@@ -134,8 +134,8 @@ class UserById(Resource):
 
 class Tasks(Resource):
     def get(self):
-        tasks = CollaborativeTask.query.all()
-        task_list = [task.to_dict(rules=('-group.collaborativetasks', '-task.collaborativetasks')) for task in tasks]
+        tasks = Task.query.all()
+        task_list = [task.to_dict(rules=('-group.tasks', '-task.tasks')) for task in tasks]
         return make_response(task_list, 200)
 
     def post(self):
