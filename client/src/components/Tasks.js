@@ -17,11 +17,15 @@ function Tasks({tasks, setTasks}){
     return displayStatus
   }
 
+  const convertedDates = tasks.map(obj => { return { ...obj, dueDate: new Date(obj.dueDate) } })
+  const sortedDates = convertedDates.sort((a, b) => b.date - a.date)
+
+  console.log(sortedDates)
     return(
         <div className="task_page" >
       <h1>Task List</h1>
       <ul>
-        {tasks.map((task) => (
+        {sortedDates.map((task) => (
           <li key={task.id}>
             {task.task} - {taskStatus(task.status)} 
             <button onClick={() => handleStatusClick(task.id)}>

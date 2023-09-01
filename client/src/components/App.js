@@ -274,7 +274,7 @@ function App() {
               <Notes />
             </Route>
             <Route path="/calendar">
-              <Calendar tasks={tasks} />
+              {/* <Calendar tasks={tasks} /> */}
             </Route>
           </Switch>
             {/*  */}
