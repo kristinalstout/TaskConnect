@@ -41,11 +41,11 @@ function AddTaskForm({ isOpen, onClose, onAddTask }) {
       dueDate,
       assignee
     }
-    fetch("http://localhost:5000/tasks", {
+    fetch("/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept:"application/json"
+        // Accept:"application/json"
       },
       body: JSON.stringify(newTask),
     })
