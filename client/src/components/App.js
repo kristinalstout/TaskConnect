@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery/dist/jquery.slim.min.js';
 import 'popper.js/dist/umd/popper.min.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import { BrowserRouter as Router, Switch, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, useLocation, useHistory } from 'react-router-dom';
 import AddTaskForm from './AddTaskForm';
 import Notes from './Notes';
 import Tasks from './Tasks';
@@ -13,7 +13,7 @@ import Calendar from './Calendar';
 import { nanoid } from 'nanoid';
 import NotesList from './NotesList';
 import AddNote from './AddNote';
-import Settings from './Settings';
+import Search from './Search';
 
 function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -27,6 +27,11 @@ function App() {
   const [isOnTasksRoute, setIsOnTasksRoute] = useState(true);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false); // toggle light/dark mode
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchPlaceholder, setSearchPlaceholder] = useState('Search Tasks');
+  const location = useLocation();
+  const history = useHistory();
+  const [searchText, setSearchText] = useState('');
 
   // Initialize the 'notes' state variable
   const [notes, setNotes] = useState([
@@ -51,8 +56,6 @@ function App() {
       date: '30/04/2021',
     },
   ]);
-
-  const location = useLocation(); // Get the current route location
 
 
   const handleAddTask = (newTask) => {
@@ -126,11 +129,24 @@ function App() {
   // Function to handle clicking on the "Tasks" link
   const handleTasksLinkClick = () => {
     setIsOnTasksRoute(true);
+    setSearchPlaceholder('Search Tasks'); // Set the placeholder for Tasks route
+    history.push('/tasks'); // Update the route programmatically
+  console.log('handleTasksLinkClick executed'); 
+  };
+  
+
+   // Changes the search bar on the notes page
+   const handleNotesLinkClick = () => {
+    setIsOnTasksRoute(false);
+    setSearchPlaceholder('Search Notes'); 
+    console.log('handleNotesLinkClick executed');
   };
 
-  // Function to handle clicking on the "Notes" link
-  const handleNotesLinkClick = () => {
+  const handleCalendarLinkClick = () => {
     setIsOnTasksRoute(false);
+    setSearchPlaceholder('Search Notes'); 
+    history.push('/notes'); 
+    console.log('handleNotesLinkClick executed');
   };
 
   useEffect(() => {
@@ -144,10 +160,6 @@ function App() {
   useEffect(() => {
     localStorage.setItem('react-notes-app-data', JSON.stringify(notes));
   }, [notes]);
-
- 
-
-  const [searchText, setSearchText] = useState('');
 
   const addNote = (text) => {
     const date = new Date();
@@ -165,10 +177,20 @@ function App() {
     setNotes(newNotes);
   };
 
+
   //dark mode
   const handleToggleDarkMode = () => {
     setDarkMode((prevDarkMode) => !darkMode);
   };
+
+
+  //search bar
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+  useEffect(() => {
+    setSearchPlaceholder(); 
+  }, [location.pathname]);
 
   return (
     <div className={`container-fluid ${darkMode ? 'dark-mode' : ''}`}>
@@ -324,21 +346,24 @@ function App() {
         <span className={`navbar-toggler-icon ${darkMode ? 'text-light' : ''}`}></span>
       </button>
       <div className={`collapse navbar-collapse ${darkMode ? 'text-light' : ''}`} id="navbarText">
-        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+  <li className="nav-item">
+    <Link to="/tasks" className={`nav-link ${darkMode ? 'text-light' : ''}`} onClick={handleTasksLinkClick}>
+      Tasks
+    </Link>
+  </li>
+  <li className="nav-item">
+    <Link to="/notes" className={`nav-link ${darkMode ? 'text-light' : ''}`} onClick={handleNotesLinkClick}>
+      Notes
+    </Link>
+
+  </li>
+</ul>
           <li className="nav-item">
-            <Link to="/tasks" className={`nav-link ${darkMode ? 'text-light' : ''}`} aria-current="page">
-              Tasks |
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/notes" className={`nav-link ${darkMode ? 'text-light' : ''}`}>
-              Notes |
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/calendar" className={`nav-link ${darkMode ? 'text-light' : ''}`}>
-              Calendar |
-            </Link>
+          <Link to="/calendar" className={`nav-link ${darkMode ? 'text-light' : ''}`} onClick={handleCalendarLinkClick}>
+      Calendar
+    </Link>
           </li>
         </ul>
         <button
@@ -395,36 +420,47 @@ function App() {
     </div>
   </nav>
   {/* Search form */}
-  <nav className={`navbar ${darkMode ? 'bg-dark' : 'bg-body-tertiary'}`}>
-    <div className="container-fluid">
-      <form className="d-flex" role="search">
-        <input className={`form-control me-2 ${darkMode ? 'text-light' : ''}`} type="search" placeholder="Search Tasks" aria-label="Search" />
-        <button className={`btn btn-outline-success ${darkMode ? 'text-light' : ''}`} type="submit">
-          Search
-        </button>
-      </form>
-    </div>
-  </nav>
-          {/* Render notes */}
-          <div className="notes-list">
-            {notes.map((note) => (
-              <Notes key={note.id} id={note.id} text={note.text} date={note.date} handleDeleteNote={deleteNote} />
-            ))}
-          </div>
+<nav className={`navbar ${darkMode ? 'bg-dark' : 'bg-body-tertiary'}`}>
+  <div className="container-fluid">
+    <form className="d-flex" role="search">
+      <input
+        className={`form-control me-2 ${darkMode ? 'text-light' : ''}`}
+        type="search"
+        placeholder={searchPlaceholder} // Set the placeholder dynamically
+        aria-label="Search"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+      <button
+        className={`btn btn-outline-success ${darkMode ? 'text-light' : ''}`}
+        type="submit"
+      >
+        Search
+      </button>
+    </form>
+  </div>
+</nav>
+
+
           {/* Routing */}
           <AddTaskForm isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTask={handleAddTask} />
           <Switch>
-            <Route path="/tasks">
-              <Tasks tasks={tasks} setTasks ={setTasks} />
-            </Route>
-            <Route path="/notes">
-              {/* You should pass appropriate props to the Notes component */}
-              <NotesList notes={notes.filter((note) => note.text.toLowerCase().includes(searchText))} handleAddNote={addNote} handleDeleteNote={deleteNote} />
-            </Route>
-            <Route path="/calendar">
-              <Calendar tasks={tasks} />
-            </Route>
+  <Route path="/tasks">
+    <Tasks tasks={tasks} setTasks={setTasks} />
+  </Route>
+  <Route path="/notes">
+    <NotesList
+      notes={notes.filter((note) => note.text.toLowerCase().includes(searchQuery))}
+      handleAddNote={addNote}
+      handleDeleteNote={deleteNote}
+      searchQuery={searchQuery}
+    />
+  </Route>
+  <Route path="/calendar">
+    <Calendar tasks={tasks} searchQuery={searchQuery} darkMode={darkMode} />
+  </Route>
           </Switch>
+
         </div>
       </div>
     </div>
