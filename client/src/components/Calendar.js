@@ -18,7 +18,7 @@ const myEventsList = [
   },
 ];
 
-const MyCalendar = ({ tasks }) => {
+const MyCalendar = ({ tasks, darkMode }) => {
   const eventList = tasks.map((task) => ({
     title: task.task,
     start: new Date(task.dueDate + "T00:00:00Z"),
@@ -32,14 +32,14 @@ const MyCalendar = ({ tasks }) => {
   }));
 
   return (
-    <div>
+    <div className={`my-calendar-container ${darkMode ? 'dark-mode' : ''}`}>
       <Calendar
         localizer={localizer}
         events={eventListAdjusted}
         startAccessor="start"
         endAccessor="end"
         style={{ height: 500 }}
-        />
+      />
     </div>
   );
 };
