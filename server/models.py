@@ -45,6 +45,10 @@ class Task(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     task = db.Column(db.Text, nullable=False)
     status = db.Column(db.Boolean, default=False)
+    due_date = db.Column(db.String)
+    assignee = db.Column(db.String)
+    space = db.Column(db.String)
+
 
     # users = db.relationship("User", backref="task")
 

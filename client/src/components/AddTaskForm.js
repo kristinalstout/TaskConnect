@@ -4,9 +4,8 @@ import { Formik, Field, Form } from "formik";
 function AddTaskForm({ isOpen, onClose, setTasks }) {
   const initialValues = {
     task: "",
-    dueDate: "",
+    date: "",
     assignee: "",
-    selectedSpace: "",
   };
 
   const availableUsers = ["Kristina", "Amir", "Matthew"];
@@ -14,6 +13,7 @@ function AddTaskForm({ isOpen, onClose, setTasks }) {
 
   const handleAddTask = async (newTask) => {
     try {
+      
       const response = await fetch("/tasks", {
         method: "POST",
         headers: {
@@ -50,8 +50,8 @@ function AddTaskForm({ isOpen, onClose, setTasks }) {
               <Field type="text" id="task" name="task" />
             </div>
             <div className="form-group">
-              <label htmlFor="dueDate">Due Date:</label>
-              <Field type="date" id="dueDate" name="dueDate" />
+              <label htmlFor="date">Due Date:</label>
+              <Field type="date" id="date" name="date" />
             </div>
             <div className="form-group">
               <label htmlFor="assignee">Assignees:</label>
@@ -65,8 +65,8 @@ function AddTaskForm({ isOpen, onClose, setTasks }) {
               </Field>
             </div>
             <div className="form-group">
-              <label htmlFor="selectedSpace">Space:</label>
-              <Field as="select" id="selectedSpace" name="selectedSpace">
+              <label htmlFor="space">Space:</label>
+              <Field as="select" id="space" name="space">
                 <option value="">Select Space</option>
                 {spaces.map((space) => (
                   <option key={space} value={space}>
