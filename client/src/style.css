@@ -90,11 +90,6 @@ body {
   z-index: 1000;
 }
 
-/* settings button */
-/* .dark-mode {
-  background-color: black;
-} */
-
 
 /* notes CSS*/
 .notes-list {
@@ -209,4 +204,43 @@ textarea:focus {
 .black-line-1 {
   margin-top: 10px; 
   border: 2px solid black;
+}
+
+
+/* Toggle Mode button */
+.dark-mode {
+  background-color: black;
+  color: whtie;
+}
+
+
+.toggle-modes {
+
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+} 
+
+.toggle-dark-mode {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.toggle-dark-mode.toggle-dark-mode {
+  background-color: black;
+}
+
+.my-calendar-container {
+  background-color: white; 
+  color: black; 
+}
+
+.my-calendar-container.dark-mode {
+  background-color: black; 
+  color: white; 
 }

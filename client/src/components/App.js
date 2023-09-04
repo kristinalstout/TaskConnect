@@ -13,6 +13,7 @@ import Calendar from './Calendar';
 import { nanoid } from 'nanoid';
 import NotesList from './NotesList';
 import AddNote from './AddNote';
+import Settings from './Settings';
 
 function App() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
@@ -25,7 +26,7 @@ function App() {
   const [loggedInMessage, setLoggedInMessage] = useState('Welcome! Please Login');
   const [isOnTasksRoute, setIsOnTasksRoute] = useState(true);
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
-  // const [darkMode, SetDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false); // toggle light/dark mode
 
   // Initialize the 'notes' state variable
   const [notes, setNotes] = useState([
@@ -53,7 +54,6 @@ function App() {
 
   const location = useLocation(); // Get the current route location
 
-  const [darkMode, setDarkMode] = useState(false); // toggle light/dark mode
 
   const handleAddTask = (newTask) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -165,8 +165,13 @@ function App() {
     setNotes(newNotes);
   };
 
+  //dark mode
+  const handleToggleDarkMode = () => {
+    setDarkMode((prevDarkMode) => !darkMode);
+  };
+
   return (
-    <div className="container-fluid">
+    <div className={`container-fluid ${darkMode ? 'dark-mode' : ''}`}>
       <div className="row">
         <div className="col-md-3 left-column">
           {/* Left column content */}
@@ -175,7 +180,7 @@ function App() {
           </Link>
           {/* left search bar */}
           <div className="search-bar">
-            <nav className="navbar bg-body-tertiary">
+            <nav className="navbar" >
               <div className="container-fluid">
                 <form className="d-flex" role="search">
                   <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
@@ -245,7 +250,7 @@ function App() {
                   </label>
                   <input
                     type="email"
-                    className="form-control"
+                    className={`form-control ${darkMode ? 'bg-dark text-light' : ''}`}
                     id="email"
                     name="email"
                     onChange={formik.handleChange}
@@ -259,7 +264,7 @@ function App() {
                   </label>
                   <input
                     type="password"
-                    className="form-control"
+                    className={`form-control ${darkMode ? 'bg-dark text-light' : ''}`}
                     id="password"
                     name="password"
                     onChange={formik.handleChange}
@@ -267,7 +272,7 @@ function App() {
                   />
                   {formik.errors.password && <p className="text-danger">{formik.errors.password}</p>}
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className={`btn ${darkMode ? 'btn-primary' : 'btn-light'}`}>
                   Sign in
                 </button>
               </form>
@@ -275,7 +280,7 @@ function App() {
               <div>
                 <button
                   type="button"
-                  className="btn btn-outline-primary"
+                  className={`btn ${darkMode ? 'btn-outline-light' : 'btn-outline-primary'}`}
                   onClick={() => setIsLoginFormOpen(true)}
                 >
                   PROFILE
@@ -284,113 +289,122 @@ function App() {
             )}
 
             {/* Modes button */}
-            <button type="button" className="btn btn-outline-secondary" style={{ marginLeft: '10px' }}>
+             <button
+              type="button"
+              className={`btn ${darkMode ? 'btn-outline-light' : 'btn-outline-secondary'}`}
+              style={{ marginLeft: '10px' }}
+              onClick={handleToggleDarkMode}
+            >
               Toggle Modes
             </button>
           </div>
         </div>
 
-        {/* Right column content */}
-        <div className="col-md-9">
-          {/* Navbar code */}
-          <nav className="navbar navbar-expand-lg bg-body-tertiary">
-            <div className="container-fluid">
+       {/* Right column content */}
+       <div className="col-md-9">
+        {/* Navbar code */}
+          <nav className={`navbar navbar-expand-lg ${darkMode ? 'bg-dark text-light' : 'bg-body-tertiary'}`}>
+            <div className={`container-fluid ${darkMode ? 'dark-mode' : ''}`}>
               <Link to="/" className="navbar-brand">
-                {isLoggedIn ? `Hi, ${localStorage.getItem('username')}` : 'Welcome! Please Login'}
-              </Link>
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarText"
-                aria-controls="navbarText"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="navbar-toggler-icon"></span>
-              </button>
-              <div className="collapse navbar-collapse" id="navbarText">
-                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li className="nav-item">
-                    <Link to="/tasks" className="nav-link" aria-current="page">
-                      Tasks |
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/notes" className="nav-link">
-                      Notes |
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/calendar" className="nav-link">
-                      Calendar |
-                    </Link>
-                  </li>
-                </ul>
-                <button
-                  type="button"
-                  className="btn btn-outline-info"
-                  onClick={() => setIsAddTaskOpen(true)}
-                >
-                  {location.pathname === '/notes' ? 'Add Note' : 'Add Task'}
-                </button>
-                <button type="button" className="btn btn-outline-warning" onClick={handleInviteClick} style={{ marginLeft: '10px' }}>
-                  Invite +
-                </button>
-                {/* Invitation Popup */}
-                {isInviteOpen && (
-                  <div className="invite-popup">
-                    <h3>Invite a Friend</h3>
-                    <input
-                      type="email"
-                      placeholder="Enter email"
-                      value={invitedEmail}
-                      onChange={(e) => setInvitedEmail(e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={handleInviteSubmit}
-                    >
-                      Send Invitation
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={() => setIsInviteOpen(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                )}
-                {/* Invitation Sent Popup */}
-                {isInvitationSent && (
-                  <div className="invite-popup">
-                    <h3>On The Way! 📬</h3>
-                    <p>Your invitation has been successfully sent!</p>
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={() => setIsInvitationSent(false)}
-                    >
-                      Close
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </nav>
-          {/* Search form */}
-          <nav className="navbar bg-body-tertiary">
-            <div className="container-fluid">
-              <form className="d-flex" role="search">
-                <input className="form-control me-2" type="search" placeholder="Search Tasks" aria-label="Search" />
-                <button className="btn btn-outline-success" type="submit">
-                  Search
-                </button>
-              </form>
-            </div>
-          </nav>
+                {isLoggedIn ? (
+                  <span className={darkMode ? 'text-light' : ''}>{`Hi, ${localStorage.getItem('username')}`}</span>
+            ) : (
+                  <span className={darkMode ? 'text-light' : ''}>Welcome! Please Login</span>
+        )}
+      </Link>
+      <button
+        className={`navbar-toggler ${darkMode ? 'text-light' : ''}`}
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarText"
+        aria-controls="navbarText"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span className={`navbar-toggler-icon ${darkMode ? 'text-light' : ''}`}></span>
+      </button>
+      <div className={`collapse navbar-collapse ${darkMode ? 'text-light' : ''}`} id="navbarText">
+        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <li className="nav-item">
+            <Link to="/tasks" className={`nav-link ${darkMode ? 'text-light' : ''}`} aria-current="page">
+              Tasks |
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/notes" className={`nav-link ${darkMode ? 'text-light' : ''}`}>
+              Notes |
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/calendar" className={`nav-link ${darkMode ? 'text-light' : ''}`}>
+              Calendar |
+            </Link>
+          </li>
+        </ul>
+        <button
+          type="button"
+          className={`btn btn-outline-info ${darkMode ? 'text-light' : ''}`}
+          onClick={() => setIsAddTaskOpen(true)}
+        >
+          {location.pathname === '/notes' ? 'Add Note' : 'Add Task'}
+        </button>
+        <button type="button" className={`btn btn-outline-warning ${darkMode ? 'text-light' : ''}`} onClick={handleInviteClick} style={{ marginLeft: '10px' }}>
+          Invite +
+        </button>
+        {/* Invitation Popup */}
+        {isInviteOpen && (
+          <div className={`invite-popup ${darkMode ? 'dark-mode' : ''}`}>
+            <h3>Invite a Friend</h3>
+            <input
+              type="email"
+              placeholder="Enter email"
+              value={invitedEmail}
+              onChange={(e) => setInvitedEmail(e.target.value)}
+            />
+            <button
+              type="button"
+              className={`btn btn-primary ${darkMode ? 'btn-dark' : ''}`}
+              onClick={handleInviteSubmit}
+            >
+              Send Invitation
+            </button>
+            <button
+              type="button"
+              className={`btn btn-secondary ${darkMode ? 'btn-dark' : ''}`}
+              onClick={() => setIsInviteOpen(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+        {/* Invitation Sent Popup */}
+        {isInvitationSent && (
+          <div className={`invite-popup ${darkMode ? 'dark-mode' : ''}`}>
+            <h3>On The Way! 📬</h3>
+            <p>Your invitation has been successfully sent!</p>
+            <button
+              type="button"
+              className={`btn btn-secondary ${darkMode ? 'btn-dark' : ''}`}
+              onClick={() => setIsInvitationSent(false)}
+            >
+              Close
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  </nav>
+  {/* Search form */}
+  <nav className={`navbar ${darkMode ? 'bg-dark' : 'bg-body-tertiary'}`}>
+    <div className="container-fluid">
+      <form className="d-flex" role="search">
+        <input className={`form-control me-2 ${darkMode ? 'text-light' : ''}`} type="search" placeholder="Search Tasks" aria-label="Search" />
+        <button className={`btn btn-outline-success ${darkMode ? 'text-light' : ''}`} type="submit">
+          Search
+        </button>
+      </form>
+    </div>
+  </nav>
           {/* Render notes */}
           <div className="notes-list">
             {notes.map((note) => (
